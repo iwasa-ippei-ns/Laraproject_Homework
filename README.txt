@@ -56,11 +56,11 @@ php artisan make:controller XXXController
 ○DBと紐づけ
 php artisan make:controller XXXController --model=XXX --resource
 
-○web.config修正
+○web.php修正
 use App\Http\Controllers\XXXController;
 Route::resource('XXX', XXXController::class);
 
-○web.config修正うまくいっているか確認(ルート確認)
+○web.php修正うまくいっているか確認(ルート確認)
 php artisan route:list
 
 [ubuntu設定]　※文字コードをutf-8にする

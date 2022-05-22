@@ -25,6 +25,9 @@ npm \
 default-mysql-client-core \
 && docker-php-ext-install pdo_mysql
 
+RUN apt-get update && \
+docker-php-ext-install pdo_mysql
+
 # Laravelで必要になるmodRewriteを有効化する
 RUN mv /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled
 RUN /bin/sh -c a2enmod rewrite
