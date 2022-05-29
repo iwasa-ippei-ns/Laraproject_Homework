@@ -2,6 +2,7 @@
 
 //use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\XXXController;
+use App\Http\Controllers\MemberController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,12 @@ use App\Http\Controllers\XXXController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'App\Http\Controllers\MemberController@index');
 Route::resource('XXX', XXXController::class);
+Route::resource('Member', MemberController::class);
+
+Route::get('/practice', 'App\Http\Controllers\MemberController@practice');
+Route::post('/find', 'App\Http\Controllers\MemberController@find');
+Route::get('/get', 'App\Http\Controllers\MemberController@get');
+Route::post('/test_members', 'App\Http\Controllers\MemberController@main');
+

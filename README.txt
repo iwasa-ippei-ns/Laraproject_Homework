@@ -1,87 +1,49 @@
-[環境構築]
+前提：Laravel環境が構築できている前提で以下の手順を記載する
+
+[テーブル作成]
 ○ドッカー起動
 docker-compose up -d
 
-○laravelインストール
-docker compose exec app_laravel_project composer create-project --prefer-dist laravel/laravel project
-
-○権限オール7
-docker compose exec -w /var/www/html app_laravel_project chmod -R 777 project
-
-○.env書き換え
-html\project\.envのDBの値を変更する
-DB_CONNECTION=mysql
-DB_HOST=db-host
-DB_PORT=14406
-DB_DATABASE=laravel_db
-DB_USERNAME=root
-DB_PASSWORD=root
-
-○DB接続確認(マイグレ実行)
-docker compose exec -w /var/www/html/project app_laravel_project php artisan migrate
-→エラーが出る場合は以下を打ってみる
-docker compose exec -w /var/www/html/project app_laravel_project php artisan migrate:fresh
-
-[DB作成]
 ○テーブルの定義を行う
-php artisan make:model -m XXX
-→project/app/Models/XXX.php　が出来る
-→project/database/migrations/yyyy_mm_dd_XXXXXX_create_XXX_table.php　が出来る
-
-project/database/migrations/yyyy_mm_dd_XXXXXX_create_XXX_table.php　にカラムを記載する
+テーブル定義ファイルが存在することを確認する
+　・factoriesファイル
+　　・project/database/testMemberFactory.php
+　
+　・migrationsファイル
+　　・project/database/migrations/2022_05_21_111056_create_department_ids_table.php
+　　・project/database/migrations/2022_05_22_103846_create_test_members_table.php
+　　
+　・seedersファイル
+　　・project/database/departmentIdSeeder.php
+　　・project/database/testMemberSeeder.php
 
 ○テーブル作成実行
 php artisan migrate
 
-○ダミーデータを作成する
-php artisan make:seeder XXXs
-→project/database/seeders/XXXs.php　が出来る
-　ここのrun()にダミーデータを記載する(便利機能：モデルファクトリ)
-　use App\Models\XXX;　の記述が必要
-
-project/database/seeders/DatabaseSeeder.phpn以下を追記する。
-        $this->call([
-            XXX::class,
-        ]);
+phpmyadminでテーブルが作成されていることを確認する
+http://localhost:4501/index.php?route=/database/structure&db=laravel_db
 
 ○ダミーデータ作成実行
 php artisan db:seed
-php artisan db:seed --class=XXXSeeder
-→phpmyadmin見るとデータが増えている
 
-[コントローラ作成]
-○初期関数あり
-php artisan make:controller XXXController
+phpmyadminでダミーデータが作成されていることを確認する
+http://localhost:4501/index.php?route=/database/structure&db=laravel_db
 
-○DBと紐づけ
-php artisan make:controller XXXController --model=XXX --resource
+〇Laravelお題ページを表示
+「http://localhost:7008/」にアクセス
 
-○web.php修正
-use App\Http\Controllers\XXXController;
-Route::resource('XXX', XXXController::class);
+〇画面からテーブルを参照・更新・追加を行う
+画面上のデータとテーブルのデータが一致しているかはphpmyadminで確認する
 
-○web.php修正うまくいっているか確認(ルート確認)
-php artisan route:list
+「axreq:All」：送信ボタンを押下し、testMemberテーブルの全データが表示されることを確認する
+　　　　　　　 
 
-[ubuntu設定]　※文字コードをutf-8にする
-# 1．パッケージ情報の更新
-sudo apt update
-sudo apt upgrade
+「axreq:Single」：idのボックスに数値を入力して送信ボタンを押下する
+　　　　　　　　　画面上に指定したidのデータが表示されていることを確認する
 
-# 2．日本語言語パックのインストール
-sudo apt -y install language-pack-ja
+「axreq:Update」：画面上の「id」「name」「mail」「age」に値を入力し、送信ボタンを押下する
+　　　　　　　　　入力した内容でテーブルの値が更新されていること
 
-# 3．ロケールを日本語に設定
-sudo update-locale LANG=ja_JP.UTF8
-
-# 4．ここでいったん終了してから、Ubuntuを再起動
-
-# 5．タイムゾーンをJSTに設定
-sudo dpkg-reconfigure tzdata
-
-# 6．日本語マニュアルのインストール
-sudo apt -y install manpages-ja manpages-ja-dev
-
-
-
+「axreq:AddSingle」：画面上の「name」「mail」「age」「department_id」に値を入力し、送信ボタンを押下する
+　　　　　　　　　　入力した内容で新しいカラムが作成されていること
 
